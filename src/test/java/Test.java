@@ -9,6 +9,6 @@ class Test {
         Model model = new Model();
         Controller controller = new Controller(model);
         GarticPhoneView view = new GarticPhoneView(controller);
-        SwingUtilities.invokeLater(view::go);
+        SwingUtilities.invokeLater(view :: start);
     }
 }

@@ -9,6 +9,10 @@ public class Controller {
     private final Model model;
     private final GarticPhoneView garticPhoneView = new GarticPhoneView(this);
 
+    public String getWhatDrawing() {
+        return model.getWhatDrawing();
+    }
+
     public Controller(Model model) {
         this.model = model;
     }
@@ -18,11 +22,11 @@ public class Controller {
         garticPhoneView.go();
     }
 
-    public void save(BufferedImage image) {
+    public void saveView(BufferedImage image) {
         model.saveView(image);
     }
 
     public BufferedImage load() {
-        return model.load();
+        return model.loadView();
     }
 }

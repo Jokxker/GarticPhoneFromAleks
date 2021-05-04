@@ -15,6 +15,8 @@ public class GarticPhoneView {
     private BufferedImage image = new BufferedImage(800, 800, BufferedImage.TYPE_INT_ARGB);
     private final ArrayList<Integer> x = new ArrayList<>();
     private final ArrayList<Integer> y = new ArrayList<>();
+    private final Font BigFontTR = new Font("TimesRoman", Font.BOLD, 30);
+    private int flag = 0;
 
     public GarticPhoneView(Controller controller) {
         this.controller = controller;
@@ -23,10 +25,20 @@ public class GarticPhoneView {
     public void start() {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 800);
-        JButton button = new JButton("Send version");
-        frame.getContentPane().add(button, BorderLayout.SOUTH);
-        JLabel label = new JLabel("Что нарисовать?", SwingConstants.CENTER);
-        Font BigFontTR = new Font("TimesRoman", Font.BOLD, 30);
+        JButton buttonSend = new JButton("Send version");
+        frame.getContentPane().add(buttonSend, BorderLayout.SOUTH);
+        JLabel label;
+        if (flag == 0) {
+            label = new JLabel("Enter your drawing task: ", SwingConstants.CENTER);
+        } else {
+            label = new JLabel("Enter : ", SwingConstants.CENTER);
+            JLabel labelDraw = new JLabel("What do you see?");
+            labelDraw.setFont(BigFontTR);
+            labelDraw.setForeground(Color.BLUE);
+            PanelDrawIt panelDrawIt = new PanelDrawIt();
+            panelDrawIt.add(labelDraw);
+            frame.getContentPane().add(panelDrawIt, BorderLayout.WEST);
+        }
         label.setFont(BigFontTR);
         label.setForeground(Color.BLUE);
         JTextField text = new JTextField();
@@ -34,23 +46,37 @@ public class GarticPhoneView {
         text.setFont(new Font("Dialog", Font.PLAIN, 20));
         frame.getContentPane().add(label, BorderLayout.NORTH);
         frame.getContentPane().add(text);
-        button.addActionListener(e-> controller.go(text.getText()));
+        buttonSend.addActionListener(e-> {
+            y.clear();
+            x.clear();
+            frame.getContentPane().removeAll();
+            frame.repaint();
+            controller.go(text.getText());
+        });
         frame.setVisible(true);
     }
 
     public void go() {
-        JButton button = new JButton("Send");
+        flag++;
+        JButton buttonSend = new JButton("Send");
         MyDrawPanel panel = new MyDrawPanel();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 800);
-        frame.getContentPane().add(button, BorderLayout.SOUTH);
+        frame.getContentPane().add(buttonSend, BorderLayout.SOUTH);
         frame.getContentPane().add(panel, BorderLayout.CENTER);
+        JLabel label = new JLabel("Draw it: " + controller.getWhatDrawing(), SwingConstants.CENTER);
+        label.setFont(BigFontTR);
+        label.setForeground(Color.BLUE);
+        panel.add(BorderLayout.NORTH, label);
         panel.addMouseMotionListener(panel);
         panel.addMouseListener(panel);
-        button.addActionListener(e-> {
-            controller.save(image);
-            x.clear();
+        buttonSend.addActionListener(e-> {
+            controller.saveView(image);
+            frame.getContentPane().removeAll();
+            frame.repaint();
             y.clear();
+            x.clear();
+            this.start();
         });
         Font BigFontTR = new Font("TimesRoman", Font.BOLD, 60);
         Box buttonBox = new Box(BoxLayout.Y_AXIS);
@@ -60,7 +86,7 @@ public class GarticPhoneView {
         buttonRed.setBackground(Color.RED);
         buttonRed.addActionListener(e-> {
             color = Color.RED;
-            controller.save(image);
+            controller.saveView(image);
             x.clear();
             y.clear();
         });
@@ -71,7 +97,7 @@ public class GarticPhoneView {
         buttonGreen.setBackground(Color.GREEN);
         buttonGreen.addActionListener(e-> {
             color = Color.GREEN;
-            controller.save(image);
+            controller.saveView(image);
             x.clear();
             y.clear();
         });
@@ -82,7 +108,7 @@ public class GarticPhoneView {
         buttonBlue.setBackground(Color.BLUE);
         buttonBlue.addActionListener(e-> {
             color = Color.BLUE;
-            controller.save(image);
+            controller.saveView(image);
             x.clear();
             y.clear();
         });
@@ -93,29 +119,29 @@ public class GarticPhoneView {
         buttonBlack.setBackground(Color.BLACK);
         buttonBlack.addActionListener(e-> {
             color = Color.BLACK;
-            controller.save(image);
+            controller.saveView(image);
             x.clear();
             y.clear();
         });
         buttonBox.add(buttonBlack);
-        JButton buttonGray = new JButton("C");
-        buttonGray.setFont(BigFontTR);
-        buttonGray.setForeground(Color.GRAY);
-        buttonGray.setBackground(Color.GRAY);
-        buttonGray.addActionListener(e-> {
-            color = Color.GRAY;
-            controller.save(image);
+        JButton buttonYellow = new JButton("C");
+        buttonYellow.setFont(BigFontTR);
+        buttonYellow.setForeground(Color.YELLOW);
+        buttonYellow.setBackground(Color.YELLOW);
+        buttonYellow.addActionListener(e-> {
+            color = Color.YELLOW;
+            controller.saveView(image);
             x.clear();
             y.clear();
         });
-        buttonBox.add(buttonGray);
+        buttonBox.add(buttonYellow);
         JButton buttonCyan = new JButton("C");
         buttonCyan.setFont(BigFontTR);
         buttonCyan.setForeground(Color.CYAN);
         buttonCyan.setBackground(Color.CYAN);
         buttonCyan.addActionListener(e-> {
             color = Color.CYAN;
-            controller.save(image);
+            controller.saveView(image);
             x.clear();
             y.clear();
         });
@@ -178,6 +204,15 @@ public class GarticPhoneView {
 
         @Override
         public void mouseExited(MouseEvent mouseEvent) {
+        }
+    }
+
+    private class PanelDrawIt extends JPanel{
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.drawImage(controller.load(), 0, 120 , 300, 300, this);
         }
     }
 }

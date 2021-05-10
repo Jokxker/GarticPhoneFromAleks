@@ -1,6 +1,6 @@
 package view;
 
-import controller.Controller;
+import model.Model;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 public class GarticPhoneView {
-    private final Controller controller;
+    private final Model model;
     private Color color;
     private final JFrame frame = new JFrame("Gartic phone from Aleks");
     private BufferedImage image = new BufferedImage(800, 800, BufferedImage.TYPE_INT_ARGB);
@@ -18,8 +18,8 @@ public class GarticPhoneView {
     private final Font BigFontTR = new Font("TimesRoman", Font.BOLD, 30);
     private int flag = 0;
 
-    public GarticPhoneView(Controller controller) {
-        this.controller = controller;
+    public GarticPhoneView(Model model) {
+        this.model = model;
     }
 
     public void start() {
@@ -51,7 +51,8 @@ public class GarticPhoneView {
             x.clear();
             frame.getContentPane().removeAll();
             frame.repaint();
-            controller.go(text.getText());
+            model.saveText(text.getText());
+            this.go();
         });
         frame.setVisible(true);
     }
@@ -64,14 +65,14 @@ public class GarticPhoneView {
         frame.setSize(800, 800);
         frame.getContentPane().add(buttonSend, BorderLayout.SOUTH);
         frame.getContentPane().add(panel, BorderLayout.CENTER);
-        JLabel label = new JLabel("Draw it: " + controller.getWhatDrawing(), SwingConstants.CENTER);
+        JLabel label = new JLabel("Draw it: " + model.getWhatDrawing(), SwingConstants.CENTER);
         label.setFont(BigFontTR);
         label.setForeground(Color.BLUE);
         panel.add(BorderLayout.NORTH, label);
         panel.addMouseMotionListener(panel);
         panel.addMouseListener(panel);
         buttonSend.addActionListener(e-> {
-            controller.saveView(image);
+            model.saveView(image);
             frame.getContentPane().removeAll();
             frame.repaint();
             y.clear();
@@ -86,7 +87,7 @@ public class GarticPhoneView {
         buttonRed.setBackground(Color.RED);
         buttonRed.addActionListener(e-> {
             color = Color.RED;
-            controller.saveView(image);
+            model.saveView(image);
             x.clear();
             y.clear();
         });
@@ -97,7 +98,7 @@ public class GarticPhoneView {
         buttonGreen.setBackground(Color.GREEN);
         buttonGreen.addActionListener(e-> {
             color = Color.GREEN;
-            controller.saveView(image);
+            model.saveView(image);
             x.clear();
             y.clear();
         });
@@ -108,7 +109,7 @@ public class GarticPhoneView {
         buttonBlue.setBackground(Color.BLUE);
         buttonBlue.addActionListener(e-> {
             color = Color.BLUE;
-            controller.saveView(image);
+            model.saveView(image);
             x.clear();
             y.clear();
         });
@@ -119,7 +120,7 @@ public class GarticPhoneView {
         buttonBlack.setBackground(Color.BLACK);
         buttonBlack.addActionListener(e-> {
             color = Color.BLACK;
-            controller.saveView(image);
+            model.saveView(image);
             x.clear();
             y.clear();
         });
@@ -130,7 +131,7 @@ public class GarticPhoneView {
         buttonYellow.setBackground(Color.YELLOW);
         buttonYellow.addActionListener(e-> {
             color = Color.YELLOW;
-            controller.saveView(image);
+            model.saveView(image);
             x.clear();
             y.clear();
         });
@@ -141,7 +142,7 @@ public class GarticPhoneView {
         buttonCyan.setBackground(Color.CYAN);
         buttonCyan.addActionListener(e-> {
             color = Color.CYAN;
-            controller.saveView(image);
+            model.saveView(image);
             x.clear();
             y.clear();
         });
@@ -157,7 +158,7 @@ public class GarticPhoneView {
         }
 
         public void updatePaint() {
-            image = controller.load();
+            image = model.loadView();
             Graphics g = image.createGraphics();
             g.setColor(color);
             for (int i = 0; i < x.size(); i++) {
@@ -212,7 +213,7 @@ public class GarticPhoneView {
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
-            g.drawImage(controller.load(), 0, 120 , 300, 300, this);
+            g.drawImage(model.loadView(), 0, 120 , 300, 300, this);
         }
     }
 }
